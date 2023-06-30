@@ -1,3 +1,5 @@
+{% load omfilters %}
+
 <nav class="navbar navbar-dark bg-primary navbar-expand-lg">
   <a class="navbar-brand" href="{% url 'produto:lista' %}">E-commerce</a>
   <button
@@ -14,57 +16,57 @@
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav ml-auto">
-      <li class="nav-item active">
-        <a class="nav-link" href="#"
-          >Home <span class="sr-only">(current)</span></a
+      {% if request.user.is_authenticated %}
+      <li class="nav-item dropdown">
+        <a
+          class="nav-link dropdown-toggle"
+          href="#"
+          id="navbarDropdown"
+          role="button"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+        >
+          Conta
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="{% url 'pedido:lista' %}">Meus pedidos</a>
+          <a class="dropdown-item" href="{% url 'perfil:criar' %}">Atualizar dados</a>
+          <a class="dropdown-item" href="{% url 'perfil:logout' %}">Sair</a>
+        </div>
+      </li>
+      {% else %}
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'perfil:criar' %}"
+          >Entrar ou cadastrar-se</a
         >
       </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">Link</a>
-      </li>
-      {% if request.user.is_authenticated %}
-        <li class="nav-item dropdown">
-          <a
-            class="nav-link dropdown-toggle"
-            href="#"
-            id="navbarDropdown"
-            role="button"
-            data-toggle="dropdown"
-            aria-haspopup="true"
-            aria-expanded="false"
-          >
-            Dropdown
-          </a>
-          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" href="{% url 'perfil:criar' %}">Atualizar</a>
-            <a class="dropdown-item" href="{% url 'perfil:logout' %}">Sair</a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#">Something else here</a>
-          </div>
-        </li>
-      {% else %}
+      {% endif %}
+      {% if request.session.carrinho %}
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'perfil:criar' %}">Entrar ou cadastrar-se</a>
+          <a
+            class="nav-link nav-cart-link active"
+            href="{% url 'produto:carrinho' %}"
+          >
+            <span class="nav-cart-text mr-1"> Carrinho </span>
+            <span class="nav-cart-count mr-1">
+              <strong>{{ request.session.carrinho|cart_total_qtd }}x</strong>
+            </span>
+            <span class="nav-cart-icon mr-2">
+              <i class="fas fa-shopping-cart"></i>
+            </span>
+          </a>
         </li>
       {% endif %}
-      <li class="nav-item">
-        <a class="nav-link nav-cart-link active" href="{% url 'produto:carrinho' %}">
-          <span class="nav-cart-text mr-1"> Carrinho </span>
-          <span class="nav-cart-count mr-1">
-            <strong>109x</strong>
-          </span>
-          <span class="nav-cart-icon mr-2">
-            <i class="fas fa-shopping-cart"></i>
-          </span>
-        </a>
-      </li>
     </ul>
-    <form class="form-inline my-2 my-lg-0">
+    <form class="form-inline my-2 my-lg-0" method="GET" action="{% url 'produto:busca' %}">
       <input
+        name="termo"
         class="form-control mr-sm-2"
         type="search"
         placeholder="Search"
         aria-label="Search"
+        value="{{request.GET.termo}}"
       />
       <button class="btn btn-secondary my-2 my-sm-0" type="submit">
         Search

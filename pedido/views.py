@@ -9,7 +9,7 @@ from django.contrib import messages
 from produto.models import Variacao
 from .models import Pedido, ItemPedido
 
-import utils
+from utils import utils
 
 
 class DispatchLoginRequiredMixin(View):

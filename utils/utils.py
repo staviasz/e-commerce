@@ -1,4 +1,5 @@
 def cart_total_qtd(carrinho):
+    print('carrinh-',carrinho)
     return sum([item['quantidade'] for item in carrinho.values()])
 
 
